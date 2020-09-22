@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect,request, url_for, render_template
 
 app = Flask(__name__)
 
@@ -35,6 +35,17 @@ def user(name):
     if name=='admin':
         return redirect(url_for('admin'))
     else:
+        return redirect(url_for('guest',guest=name))
+
+#3-------------Side ways to get value from form and display-----
+@app.route('/form')
+def form():
+    return render_template('register.html')
+
+@app.route('/verify', methods=['POST','GET'])
+def verify():
+    if request.method=='POST':
+        name=request.form['name']
         return redirect(url_for('guest',guest=name))
 
 if __name__=='__main__':
