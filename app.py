@@ -1,7 +1,7 @@
-from flask import Flask, redirect,request, url_for, render_template, make_response
+from flask import Flask, redirect,request, url_for, render_template, make_response,session,escape
 
 app = Flask(__name__)
-
+app.secret_key='x4s5er4AD445'
 @app.route('/')
 def hello():
     return ('Hello')
@@ -88,11 +88,40 @@ def set_cookie():
         return resp
 #hmm... can't redirect before returning response can I? 
 
+@app.route('/readcookie')
+def read_cookie():
+    return render_template('readcookie.html')
+
 @app.route('/getCookie')
 def getCookie():
     name=request.cookies.get('user')
     password = request.cookies.get('pass')
     return (render_template('getCookie.html',name=name,password=password))
+
+#--Working with sessions
+@app.route('/mysession')
+def mysession():
+    if 'username' in session:
+        username = session['username']
+        return 'Logged in as '+username+'<br> <a href="/logout">Click here to log out</a>'
+    else:
+        return 'You are not logged in <br> <a href="/login"> Click here to log in </a>'
+@app.route('/login', methods=['POST','GET'])
+def login():
+    if request.method=="POST":
+        session['username'] = request.form['username']
+        return redirect(url_for('mysession'))
+    return '''
+    <form action="" method="POST">
+    <input type ="text" name="username"/>
+    <input type="submit" value="login"/>
+    </form>
+    '''
+@app.route('/logout')
+def logout():
+    #remove username from session
+    session.pop('username', None)
+    return redirect(url_for('mysession'))
 
 if __name__=='__main__':
     app.debug=True
