@@ -1,5 +1,5 @@
 from flask import Flask, redirect,request, url_for, render_template, make_response,session,escape
-
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.secret_key='x4s5er4AD445'
 @app.route('/')
@@ -98,7 +98,7 @@ def getCookie():
     password = request.cookies.get('pass')
     return (render_template('getCookie.html',name=name,password=password))
 
-#--Working with sessions
+#--Working with sessions Ensure app.secret_key is set and session is imported from flask
 @app.route('/mysession')
 def mysession():
     if 'username' in session:
@@ -122,6 +122,17 @@ def logout():
     #remove username from session
     session.pop('username', None)
     return redirect(url_for('mysession'))
+#--file uploading-----------
+@app.route('/upload')
+def file_upload():
+    return render_template('upload.html')
+@app.route('/uploader', methods=['POST','GET'])
+def uploader():
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save(secure_filename(f.filename))
+        return "File uploaded successfully"
+
 
 if __name__=='__main__':
     app.debug=True
