@@ -39,7 +39,7 @@ def user(name):
 
 #3-------------Side ways to get value from form and display-----
 @app.route('/form')
-def form():
+def register():
     return render_template('register.html')
 
 @app.route('/verify', methods=['POST','GET'])
@@ -47,7 +47,32 @@ def verify():
     if request.method=='POST':
         name=request.form['name']
         return redirect(url_for('guest',guest=name))
+#4--------------------Trying out jinja2 template engine - basic----
+@app.route('/welcome/<user>')
+def welcome(user):
+    return render_template('welcome.html', name=user,marks=60)
+#5----------using for loop, dict and table ---- with jinja2 and  flask--
+@app.route('/result')
+def result():
+    scores = {'phy':60,'chem':60,'maths':70}
+    return render_template('result.html', result=scores)
 
+#6-----Working with static files ---Not working..at greet.html js static script path
+@app.route('/greet')
+def greet():
+    return render_template('greet.html')
+
+#7---Sending form data to template
+#a form is rendered through /student.html and is posted to /display URLwhich tirggers the display function
+@app.route('/student')
+def student():
+    return render_template('student.html')
+
+@app.route('/display',methods=['POST','GET'])
+def display():
+    if request.method=='POST':
+        result = request.form
+        return render_template("display.html",result=result)
 if __name__=='__main__':
     app.debug=True
     app.run()
