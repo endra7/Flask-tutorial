@@ -1,4 +1,4 @@
-from flask import Flask, redirect,request, url_for, render_template
+from flask import Flask, redirect,request, url_for, render_template, make_response
 
 app = Flask(__name__)
 
@@ -73,6 +73,27 @@ def display():
     if request.method=='POST':
         result = request.form
         return render_template("display.html",result=result)
+
+#8 setting and getting cookies
+#Get potential cookie data from any form. Getting data from welcome.html and set form action to /setcookie over there
+@app.route('/setcookie',methods=['POST','GET'])
+def set_cookie():
+    if request.method=='POST':
+        user=request.form['user']
+        password=request.form['password']
+
+        resp = make_response(render_template('readcookie.html'))
+        resp.set_cookie('user',user)
+        resp.set_cookie('pass',password)
+        return resp
+#hmm... can't redirect before returning response can I? 
+
+@app.route('/getCookie')
+def getCookie():
+    name=request.cookies.get('user')
+    password = request.cookies.get('pass')
+    return (render_template('getCookie.html',name=name,password=password))
+
 if __name__=='__main__':
     app.debug=True
     app.run()

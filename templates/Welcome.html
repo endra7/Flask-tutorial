@@ -12,6 +12,12 @@
         <h2><p style="color: red;">You are lagging behind..</p></h2>
         {% endif %}
 
+        <form action="/setcookie" method="POST">
+            <label>ID</label><input type="text" name="user"/>
+            <label>Password</label><input type="password" name="password"/>
+            <input type="submit" value="Login">
+        </form>
+
 
     </body>
 </html>
